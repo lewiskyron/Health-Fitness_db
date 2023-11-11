@@ -11,7 +11,7 @@ JOIN
     Exercises E ON ED.ExerciseID = E.ExerciseID
 WHERE 
     WS.UserID = 1
-    AND DATE(WS.SessionDate) = DATE("2023-05-06")
+    AND DATE(WS.SessionDate) = DATE("2023-11-10")
 GROUP BY 
     WS.SessionDate
 ORDER BY 
@@ -34,7 +34,7 @@ JOIN
     Exercises E ON ED.ExerciseID = E.ExerciseID
 WHERE 
     WS.UserID = 1
-    AND DATE(WS.SessionDate) = DATE("2023-05-06")
+    AND DATE(WS.SessionDate) = DATE("2023-11-10")
 ORDER BY 
     WS.SessionDate, E.ExerciseName;
 

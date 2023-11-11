@@ -40,4 +40,3 @@ conn.close()
 print("Inserting the fake data...")
 os.system("python fake_data.py")
 print("Fake data inserted successfully")
-

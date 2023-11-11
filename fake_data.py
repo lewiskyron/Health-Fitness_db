@@ -145,8 +145,8 @@ def insert_user_health_goals_to_db(user_health_goals):
 
 def generate_workout_sessions(user_ids, sessions_per_user=10):
     workout_sessions = []
-    start_date = datetime(2023, 11, 1)  # October 1st
-    end_date = datetime(2023, 11, 24)  # October 11th
+    start_date = datetime(2023, 11, 1)  # November 1st
+    end_date = datetime(2023, 11, 15)  # November 15th
 
     for user_id in user_ids:
         for _ in range(sessions_per_user):
@@ -259,38 +259,32 @@ def generate_and_insert_progress_tracking(user_ids):
 
 def generate_daily_sleep_data(user_ids):
     daily_sleep_data = []
+    start_date = datetime(2023, 11, 1)  # November 1st
+    end_date = datetime(2023, 11, 15)  # November 15th
+
     for user_id in user_ids:
-        # Generate sleep data for October and November
-        for month in [10, 11]:  # October and November
-            for day in range(1, 32):  # Assuming 31 days for simplicity
-                try:
-                    # Create a date object for the current day
-                    date = datetime(year=2023, month=month, day=day)
+        current_date = start_date
+        while current_date <= end_date:
+            # Random sleep start time between 8:00 PM (20:00) and 12:00 midnight (24:00)
+            sleep_start_hour = random.randint(20, 23)
+            sleep_start_minute = random.randint(0, 59)
+            sleep_start = current_date.replace(
+                hour=sleep_start_hour,
+                minute=sleep_start_minute,
+                second=0,
+                microsecond=0,
+            )
 
-                    # Random sleep start time between 8:00 PM (20:00) and 12:00 midnight (24:00)
-                    sleep_start_hour = random.randint(20, 23)
-                    sleep_start_minute = random.randint(0, 59)
-                    sleep_start = datetime.combine(
-                        date, datetime.min.time()
-                    ) + timedelta(hours=sleep_start_hour, minutes=sleep_start_minute)
+            # Random sleep duration between 4 and 9 hours
+            sleep_duration = round(random.uniform(4, 9), 2)
 
-                    # Random wake-up time between 4:30 AM and 11:00 AM the next day
-                    wake_up_hour = random.randint(4, 10)
-                    wake_up_minute = 30 if wake_up_hour == 4 else random.randint(0, 59)
-                    sleep_end = datetime.combine(date, datetime.min.time()) + timedelta(
-                        days=1, hours=wake_up_hour, minutes=wake_up_minute
-                    )
+            # Calculate sleep end time
+            sleep_end = sleep_start + timedelta(hours=sleep_duration)
 
-                    # Calculate sleep duration in hours
-                    sleep_duration = round(
-                        (sleep_end - sleep_start).total_seconds() / 3600, 2
-                    )
-                    daily_sleep_data.append(
-                        (user_id, sleep_start, sleep_end, sleep_duration)
-                    )
-                except ValueError:
-                    # Skip invalid dates (like October 31st)
-                    continue
+            daily_sleep_data.append((user_id, sleep_start, sleep_end, sleep_duration))
+
+            # Move to the next day
+            current_date += timedelta(days=1)
 
     return daily_sleep_data
 
@@ -357,10 +351,11 @@ def generate_user_meals(user_ids):
         )
         user_restrictions = [row[0] for row in cursor.fetchall()]
 
-        # Loop for 5 days
-        for day in range(5):
-            start_date = datetime.now() - timedelta(days=5)
-            day_date = start_date + timedelta(days=day)
+        # Date range from November 1st to November 15th
+        start_date = datetime(2023, 11, 1)
+
+        for _ in range(15):  # 15 days (from November 1st to November 15th)
+            day_date = start_date + timedelta(days=_)
 
             for _ in range(3):  # Three meals per day
                 selected_meal_id = random.choice(goal_meals)
